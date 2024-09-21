@@ -1,50 +1,25 @@
-# Welcome to your Expo app 👋
+# **Clarity**
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Clarity is a mobile application built with **Expo** and **React Native** to help users record short 60-second videos about their daily goals and progress. It allows users to store these videos, view them later in a library, and track their personal journey over time.
 
-## Get started
+## **Features**
+- **Record Videos**: Capture 60-second videos of yourself talking about your goals and daily progress.
+- **Save Videos Locally**: Videos are stored locally on your device for future reference.
+- **Video Library**: Access and playback all your recorded videos in a well-organized library.
+- **Simple Navigation**: Intuitive navigation between the camera screen and the video library.
 
-1. Install dependencies
+## **Technologies Used**
+- **React Native with Expo**: For cross-platform mobile app development.
+- **expo-camera**: To access the device’s camera and record videos.
+- **expo-file-system**: To manage and save recorded videos locally on the device.
+- **expo-av**: For video playback from the library.
+- **React Navigation**: For navigating between screens.
 
-   ```bash
-   npm install
-   ```
+## **Getting Started**
 
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### **Prerequisites**
+Ensure that you have the following installed:
+- **Node.js**: [Download here](https://nodejs.org/en/)
+- **Expo CLI**: Install globally by running:
+  ```bash
+  npm install -g expo-cli
