@@ -67,15 +67,33 @@ export default function App() {
   const saveVideo = async () => {
     if (record) {
       setIsSaving(true);
+  
+      // Generate a unique filename based on the timestamp
+      const timestamp = new Date().getTime();
+      const fileUri = `${FileSystem.documentDirectory}videos/video_${timestamp}.mp4`;
+  
+      // Ensure the 'videos' directory exists before saving
+      const videoDir = `${FileSystem.documentDirectory}videos/`;
+      const dirInfo = await FileSystem.getInfoAsync(videoDir);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(videoDir, { intermediates: true });
+        console.log('Videos directory created');
+      }
+  
       setTimeout(async () => {
-        const fileUri = FileSystem.documentDirectory + 'my_video.mp4';
-        await FileSystem.moveAsync({
-          from: record,
-          to: fileUri,
-        });
-        setIsSaving(false);
-        navigation.navigate('ListerPage');
-      }, 3000); // 3-second delay
+        try {
+          await FileSystem.moveAsync({
+            from: record,
+            to: fileUri,
+          });
+          setIsSaving(false);
+          navigation.navigate('ListerPage');
+        } catch (error) {
+          console.error('Error saving video:', error);
+          Alert.alert('Save Error', 'There was an error saving the video.');
+          setIsSaving(false);
+        }
+      }, 1500); // 1.5-second delay
     } else {
       Alert.alert('No video to save', 'Please record a video first.');
     }
