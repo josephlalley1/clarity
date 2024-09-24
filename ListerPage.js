@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import * as FileSystem from 'expo-file-system';
+
+const { width, height } = Dimensions.get('window'); // Get device dimensions
 
 export default function ListerPage() {
   const navigation = useNavigation();
@@ -93,9 +95,9 @@ export default function ListerPage() {
       {playingVideoUri ? (
         <Video
           source={{ uri: playingVideoUri }}
-          style={styles.videoPlayer}
+          style={styles.videoPlayer} // Full-screen video player
           useNativeControls
-          resizeMode="contain"
+          resizeMode="cover" // This will make the video fill the entire screen without black bars
           isLooping
           shouldPlay
         />
@@ -105,6 +107,8 @@ export default function ListerPage() {
           renderItem={renderVideoItem}
           keyExtractor={(item) => item.id}
           style={styles.videoList}
+          numColumns={2} // Set number of columns to 2 for a grid layout
+          columnWrapperStyle={styles.columnWrapper} // Style for the columns
         />
       )}
     </View>
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 50, // Move the header down by 30 pixels
+    paddingTop: 50,
   },
   backButton: {
     width: 20,
@@ -143,13 +147,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   videoItem: {
-    margin: 10,
+    margin: 0,
     alignItems: 'center',
   },
   thumbnail: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
+    width: 195,
+    height: 195,
   },
   thumbnailPlaceholder: {
     width: 150,
@@ -160,8 +163,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   videoPlayer: {
-    width: '100%',
-    height: 300,
-    marginTop: 20,
+    width: width, // Full width of the device
+    height: height, // Full height of the device
+  },
+  columnWrapper: {
+    justifyContent: 'space-between', // Space out the columns evenly
   },
 });
