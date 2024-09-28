@@ -4,6 +4,9 @@ import { Camera, CameraType } from 'expo-camera/legacy';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import firebase from './firebase'; // Assuming you have initialized Firebase in firebase.js
 
 export default function App() {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -60,30 +63,51 @@ export default function App() {
     if (record) {
       setIsSaving(true);
   
-      const timestamp = new Date().getTime();
-      const fileUri = `${FileSystem.documentDirectory}videos/video_${timestamp}.mp4`;
-  
-      const videoDir = `${FileSystem.documentDirectory}videos/`;
-      const dirInfo = await FileSystem.getInfoAsync(videoDir);
-      if (!dirInfo.exists) {
-        await FileSystem.makeDirectoryAsync(videoDir, { intermediates: true });
-        console.log('Videos directory created');
-      }
-  
-      setTimeout(async () => {
-        try {
-          await FileSystem.moveAsync({
-            from: record,
-            to: fileUri,
-          });
+      try {
+        // Retrieve UID from AsyncStorage
+        const userUID = await AsyncStorage.getItem('userUID');
+        if (!userUID) {
+          Alert.alert('Error', 'User UID not found. Please sign in again.');
           setIsSaving(false);
-          navigation.navigate('ListerPage');
-        } catch (error) {
-          console.error('Error saving video:', error);
-          Alert.alert('Save Error', 'There was an error saving the video.');
-          setIsSaving(false);
+          return;
         }
-      }, 1500); // 1.5-second delay
+
+        const timestamp = new Date().getTime();
+        const videoUri = record;
+        const response = await fetch(videoUri);
+        const blob = await response.blob();
+  
+        const storage = getStorage();
+        const storageRef = ref(storage, `videos/${userUID}/video_${timestamp}.mp4`); // Use UID in the path
+  
+        const uploadTask = uploadBytesResumable(storageRef, blob);
+  
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // You can monitor upload progress here, e.g., show a progress bar
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+          },
+          (error) => {
+            console.error('Upload error:', error);
+            Alert.alert('Upload Error', 'There was an error uploading the video.');
+            setIsSaving(false);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              console.log('File available at', downloadURL);
+              Alert.alert('Video uploaded!', 'The video has been successfully uploaded.');
+              setIsSaving(false);
+              navigation.navigate('ListerPage');
+            });
+          }
+        );
+      } catch (error) {
+        console.error('Error saving video:', error);
+        Alert.alert('Save Error', 'There was an error saving the video.');
+        setIsSaving(false);
+      }
     } else {
       Alert.alert('No video to save', 'Please record a video first.');
     }

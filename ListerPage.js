@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import * as FileSystem from 'expo-file-system';
+import { getStorage, ref, listAll, getDownloadURL, getMetadata } from 'firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,46 +37,43 @@ export default function ListerPage() {
   const [videoDateTime, setVideoDateTime] = useState('');
 
   useEffect(() => {
-    const getSavedVideos = async () => {
+    const fetchVideos = async () => {
       try {
-        const videoDir = `${FileSystem.documentDirectory}videos/`;
-        const dirInfo = await FileSystem.getInfoAsync(videoDir);
-  
-        if (dirInfo.exists) {
-          const videoFiles = await FileSystem.readDirectoryAsync(videoDir);
-          const videoList = await Promise.all(
-            videoFiles.map(async (filename) => {
-              const fileInfo = await FileSystem.getInfoAsync(`${videoDir}${filename}`);
-              
-              // Ensure the creation time is retrieved correctly
-              const creationTime = fileInfo.creationTime || fileInfo.modificationTime; // Use creationTime if available, otherwise modificationTime
-              const date = new Date(creationTime * 1000); // Convert to milliseconds
-              
-              if (isNaN(date.getTime())) {
-                console.error(`Invalid date for file: ${filename}`);
-                return null; // Skip invalid dates
-              }
-              
-              const formattedDateTime = formatDateWithSuffix(date);
-              return {
-                id: filename,
-                uri: `${videoDir}${filename}`,
-                dateTime: formattedDateTime,
-              };
-            })
-          );
-  
-          // Filter out any null values (invalid dates)
-          setVideos(videoList.filter(video => video !== null));
+        // Retrieve UID from AsyncStorage
+        const userUID = await AsyncStorage.getItem('userUID');
+        if (!userUID) {
+          Alert.alert('Error', 'User UID not found. Please sign in again.');
+          return;
         }
+
+        const storage = getStorage();
+        const userVideosRef = ref(storage, `videos/${userUID}/`);
+
+        // List all items in the user's video directory
+        const videoList = await listAll(userVideosRef);
+
+        const videoPromises = videoList.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          const metadata = await getMetadata(itemRef); // Get metadata
+          const creationTime = metadata.timeCreated; // Access creation time from metadata
+          const date = new Date(creationTime);
+
+          return {
+            id: itemRef.name,
+            uri: url,
+            dateTime: formatDateWithSuffix(date),
+          };
+        });
+
+        const videosData = await Promise.all(videoPromises);
+        setVideos(videosData);
       } catch (error) {
-        console.error('Error reading video files:', error);
+        console.error('Error fetching videos:', error);
       }
     };
-  
-    getSavedVideos();
+
+    fetchVideos();
   }, []);
-  
 
   useEffect(() => {
     videos.forEach(async (video) => {
