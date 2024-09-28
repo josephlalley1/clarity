@@ -11,8 +11,6 @@ export default function App() {
   const [camera, setCamera] = useState(null);
   const [record, setRecord] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [borderRadius, setBorderRadius] = useState(35);
-  const [buttonColor, setButtonColor] = useState('white');
   const [recordTime, setRecordTime] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const video = React.useRef(null);
@@ -46,21 +44,15 @@ export default function App() {
     if (isRecording) {
       camera.stopRecording();
       setIsRecording(false);
-      setBorderRadius(35);
-      setButtonColor('grey');
       setRecordTime(0);
     } else {
       setIsRecording(true);
-      setBorderRadius(20);
-      setButtonColor('red');
       setRecordTime(0);
       const data = await camera.recordAsync({
         maxDuration: 10,
       });
       setRecord(data.uri);
       setIsRecording(false);
-      setBorderRadius(35);
-      setButtonColor('grey');
     }
   };
 
@@ -68,11 +60,9 @@ export default function App() {
     if (record) {
       setIsSaving(true);
   
-      // Generate a unique filename based on the timestamp
       const timestamp = new Date().getTime();
       const fileUri = `${FileSystem.documentDirectory}videos/video_${timestamp}.mp4`;
   
-      // Ensure the 'videos' directory exists before saving
       const videoDir = `${FileSystem.documentDirectory}videos/`;
       const dirInfo = await FileSystem.getInfoAsync(videoDir);
       if (!dirInfo.exists) {
@@ -123,7 +113,6 @@ export default function App() {
 
   useFocusEffect(
     React.useCallback(() => {
-      // Cleanup function to stop playback when navigating away
       return () => {
         if (video.current) {
           video.current.stopAsync();
@@ -159,15 +148,17 @@ export default function App() {
             onPress={saveVideo}
             disabled={isSaving}
           >
-            <Text style={styles.saveButtonText}>
-              {isSaving ? 'Saving Video ...' : 'Save Video'}
+            <Text 
+              style={[styles.saveButtonText, isSaving && styles.saveButtonTextSaving]}
+            >
+              {isSaving ? 'Saving Video...' : 'Save Video'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.binButton}
             onPress={deleteVideo}
           >
-            <Image source={require('./assets/bin.png')} style={styles.binIcon} />
+            <Image source={require('./assets/close.png')} style={styles.binIcon} />
           </TouchableOpacity>
         </>
       ) : (
@@ -184,9 +175,13 @@ export default function App() {
           <View style={styles.controls}>
             <View style={styles.recordContainer}>
               <TouchableOpacity
-                style={[styles.recordButton, { borderRadius, backgroundColor: buttonColor }]}
                 onPress={handleRecordToggle}
-              />
+              >
+                <Image 
+                  source={isRecording ? require('./assets/red-rec.png') : require('./assets/white-rec.png')} 
+                  style={styles.recordButton} 
+                />
+              </TouchableOpacity>
               {isRecording && (
                 <Text style={styles.timer}>
                   {formatTime(recordTime)}
@@ -202,7 +197,7 @@ export default function App() {
           style={styles.galleryButton}
           onPress={() => navigation.navigate('ListerPage')}
         >
-          <Image source={require('./assets/gallery.png')} style={styles.galleryIcon} />
+          <Image source={require('./assets/grid.png')} style={styles.galleryIcon} />
         </TouchableOpacity>
       )}
     </View>
@@ -233,18 +228,15 @@ const styles = StyleSheet.create({
   },
   recordContainer: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 50,
     height: 100,
   },
   recordButton: {
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
+    width: 115,
+    height: 115,
   },
   timer: {
-    marginTop: 5,
+    marginTop: 10,
     fontSize: 18,
     color: 'white',
   },
@@ -261,28 +253,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   savingButton: {
-    opacity: 0.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
   },
   saveButtonText: {
-    color: 'black',
     fontSize: 18,
+    color: 'black',
+  },
+  saveButtonTextSaving: {
+    color: 'white',
+    zIndex: 10,
   },
   binButton: {
     position: 'absolute',
-    top: 70,
+    top: 60,
     right: 20,
   },
   binIcon: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
   },
   galleryButton: {
     position: 'absolute',
-    top: 70,
+    top: 60,
     right: 20,
   },
   galleryIcon: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
   },
 });
