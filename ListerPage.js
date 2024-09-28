@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from 'firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth } from 'firebase/auth'; // Import Auth
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,13 +39,14 @@ export default function ListerPage() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        // Retrieve UID from AsyncStorage
-        const userUID = await AsyncStorage.getItem('userUID');
-        if (!userUID) {
-          Alert.alert('Error', 'User UID not found. Please sign in again.');
+        const auth = getAuth();
+        const user = auth.currentUser; // Get current authenticated user
+        if (!user) {
+          Alert.alert('Error', 'User not authenticated. Please sign in again.');
           return;
         }
 
+        const userUID = user.uid; // Get UID directly from user
         const storage = getStorage();
         const userVideosRef = ref(storage, `videos/${userUID}/`);
 
@@ -69,6 +70,7 @@ export default function ListerPage() {
         setVideos(videosData);
       } catch (error) {
         console.error('Error fetching videos:', error);
+        Alert.alert('Error', 'There was an error fetching videos. Please try again later.');
       }
     };
 

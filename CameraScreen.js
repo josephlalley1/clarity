@@ -5,8 +5,7 @@ import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import firebase from './firebase'; // Assuming you have initialized Firebase in firebase.js
+import { getAuth } from 'firebase/auth'; // Import Auth
 
 export default function App() {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -17,7 +16,7 @@ export default function App() {
   const [recordTime, setRecordTime] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const video = React.useRef(null);
-
+  
   const [type] = useState(CameraType.front);
   const navigation = useNavigation();
 
@@ -64,14 +63,16 @@ export default function App() {
       setIsSaving(true);
   
       try {
-        // Retrieve UID from AsyncStorage
-        const userUID = await AsyncStorage.getItem('userUID');
-        if (!userUID) {
-          Alert.alert('Error', 'User UID not found. Please sign in again.');
+        const auth = getAuth(); // Get authentication instance
+        const user = auth.currentUser; // Get the currently authenticated user
+
+        if (!user) {
+          Alert.alert('Error', 'User not authenticated. Please sign in again.');
           setIsSaving(false);
           return;
         }
 
+        const userUID = user.uid; // Get UID from the current user
         const timestamp = new Date().getTime();
         const videoUri = record;
         const response = await fetch(videoUri);
@@ -85,7 +86,6 @@ export default function App() {
         uploadTask.on(
           'state_changed',
           (snapshot) => {
-            // You can monitor upload progress here, e.g., show a progress bar
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log('Upload is ' + progress + '% done');
           },

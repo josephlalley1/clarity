@@ -1,10 +1,8 @@
-// Import the functions you need from the Firebase SDKs
+// Import necessary functions from Firebase SDK
 import { initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously } from "firebase/auth";  // Import Auth and anonymous sign-in
-import { getStorage } from "firebase/storage";               // Import Firebase Storage
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-// Your web app's Firebase configuration
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAjpgEXceNttO_QVM5h5G38DxOLKFX0hgI",
   authDomain: "clarity-740bf.firebaseapp.com",
@@ -17,21 +15,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Storage and Auth
-export const storage = getStorage(app);
-export const auth = getAuth(app);
-
-// Sign in anonymously
-signInAnonymously(auth)
-  .then(async (userCredential) => {
-    // Signed in successfully.
-    const user = userCredential.user;  // This is the signed-in user
-    console.log('Signed in anonymously:', user.uid);
-    
-    // Store the UID using AsyncStorage
-    await AsyncStorage.setItem('userUID', user.uid);
-  })
-  .catch((error) => {
-    console.error('Anonymous sign-in failed:', error);
-  });
+const auth = getAuth(app);
