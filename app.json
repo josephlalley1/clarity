@@ -12,7 +12,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.josephlalley.clarityapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to the camera to capture photos and videos.",
+        "NSMicrophoneUsageDescription": "This app needs access to the microphone to record audio.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to save videos and photos.",
+        "ITSAppUsesNonExemptEncryption": "NO"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,6 +29,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7b9d2727-88fd-401f-9287-229300f25dd2"
+      }
     }
   }
 }
