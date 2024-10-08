@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 const AuthPage = ({ navigation }) => {
@@ -30,7 +30,7 @@ const AuthPage = ({ navigation }) => {
 
   return (
     <>
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{isSignup ? 'Sign Up' : 'Sign In'}</Text>
       <TextInput
         style={styles.input}
@@ -49,7 +49,7 @@ const AuthPage = ({ navigation }) => {
       />
       <Button title={isSignup ? 'Sign Up' : 'Sign In'} onPress={handleAuth} />
       <Button title={`Switch to ${isSignup ? 'Sign In' : 'Sign Up'}`} onPress={() => setIsSignup(!isSignup)} />
-    </View>
+    </SafeAreaView>
     </>
   );
 };

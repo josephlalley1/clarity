@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.josephlalley.clarityapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +35,7 @@
       "eas": {
         "projectId": "7b9d2727-88fd-401f-9287-229300f25dd2"
       }
-    }
+    },
+    "entryPoint": "./index.js"
   }
 }

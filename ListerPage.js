@@ -170,19 +170,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: '#131313'
   },
   header: {
     width: '100%',
     padding: 16,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#131313',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: 50,
+    color: '#fff'
   },
   backButton: {
     width: 20,
     height: 20,
+    tintColor: '#fff',
   },
   headerText: {
     fontSize: 20,

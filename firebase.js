@@ -1,6 +1,6 @@
 // Import necessary functions from Firebase SDK
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 // Your Firebase config
 const firebaseConfig = {
