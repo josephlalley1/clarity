@@ -1,18 +1,16 @@
-// Import necessary functions from Firebase SDK
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your Firebase config
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAjpgEXceNttO_QVM5h5G38DxOLKFX0hgI",
-  authDomain: "clarity-740bf.firebaseapp.com",
-  projectId: "clarity-740bf",
-  storageBucket: "clarity-740bf.appspot.com",
-  messagingSenderId: "143583289018",
-  appId: "1:143583289018:web:efa702b6155c23bec2ec83",
-  measurementId: "G-Q0P6JMBT79"
+  apiKey: "AIzaSyDnW4ccdgZdRWJfE76ctgZA_JBM0Oia3NA",
+  authDomain: "clarity-b34b7.firebaseapp.com",
+  projectId: "clarity-b34b7",
+  storageBucket: "clarity-b34b7.appspot.com",
+  messagingSenderId: "894426751085",
+  appId: "1:894426751085:web:729fc736566ddf7c28df64"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
