@@ -51,7 +51,7 @@ export default function App() {
       setIsRecording(true);
       setRecordTime(0);
       const data = await camera.recordAsync({
-        maxDuration: 10,
+        maxDuration: 180,
       });
       setRecord(data.uri);
       setIsRecording(false);
